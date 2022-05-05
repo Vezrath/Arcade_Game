@@ -1,12 +1,16 @@
 from turtle import *
 from pprint import pprint
 import random
+import scoreboard
 
 # --- Screen where to draw
 screen = Screen()
 screen.bgcolor("black")
-screen.setup(1000, 1200)
+screen.setup(1400, 1200)
 screen.register_shape("brick", ((-10, -30), (-10, 30), (10, 30), (10, -30)))
+
+# --- Scoreboard
+scoreboard = scoreboard.Scoreboard()
 
 # --- Turtles
 tim = Turtle()
@@ -54,7 +58,7 @@ for row_index in range(4):
     for brick_index in range(12):
         all_bricks[f"row_{row_index}"].append(brick.clone())
         brick.forward(66)
-brick.goto(500, -300)
+brick.goto(800, -300)
 
 
 def paddle_left():
@@ -87,7 +91,8 @@ def check_horizontal_collision():
             # noinspection PyTypeChecker
             if ball.distance(item) < 22 or ball.distance(item.xcor() + 10, item.ycor()) < 22\
                     or ball.distance(item.xcor() - 10, item.ycor()) < 22:
-                item.goto(500, -300)
+                item.goto(800, -300)
+                scoreboard.update_score()
                 return True
 
 
@@ -98,9 +103,12 @@ def check_vertical_collision():
             # noinspection PyTypeChecker
             if ball.distance(item) < 22 or ball.distance(item.xcor(), item.ycor() + 5) < 22 \
                     or ball.distance(item.xcor(), item.ycor() - 5) < 22:
-                item.goto(500, -300)
+                item.goto(800, -300)
+                scoreboard.update_score()
                 return True
 
+
+# TODO Restrict paddle movement in the game area
 
 game_is_on = True
 while game_is_on:
@@ -168,16 +176,14 @@ while game_is_on:
     if ball.heading() == 315 and ball.xcor() >= 400 - corr:
         turn_right()
 
-# TODO 7 Build scoreboard
-
-# TODO 8 Save high score
-
 # TODO 9 Can you make a "loading" screen while tim draws the game?
 
 # Lose condition
     if ball.ycor() <= -600:
         print("LOSE THE GAME")
         game_is_on = False
+        if scoreboard.score > scoreboard.hi_score:
+            scoreboard.update_high_score()
 
 exitonclick()
 mainloop()
